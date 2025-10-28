@@ -1,0 +1,10 @@
+venue 
+
+id, name, address 
+
+review
+
+rid, uid
+
+user
+uid, name, last name
