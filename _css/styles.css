@@ -29,6 +29,26 @@ nav{
 ------------------------------------*/
 #banner{
 	height: 500px;
-	background: url(https://placehold.co/1920x500),
-	no-repeat fixed center / cover;
+	/*background: url(https://placehold.co/1920x500),
+	no-repeat fixed center / cover;*/
+	background-color: #dddddd;
+}
+#search-container{
+	display: flex;
+	justify-content: center;
+}
+#input-field{
+	width: 80vw;
+	padding: 20px;
+}
+#banner-text-box{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+#banner-text-content{
+	width: 80vw;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 50px;
 }
