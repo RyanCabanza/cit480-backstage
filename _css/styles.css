@@ -27,6 +27,8 @@ nav{
 
 /* Index
 ------------------------------------*/
+
+/*---Banner---*/
 #banner{
 	height: 500px;
 	/*background: url(https://placehold.co/1920x500),
@@ -51,4 +53,31 @@ nav{
 	margin-left: auto;
 	margin-right: auto;
 	padding-bottom: 50px;
+}
+
+/*---About---*/
+#about img{
+	display: inline-block;
+	padding-right: 15px;
+}
+#about h4{
+	display: inline;
+	vertical-align: middle;
+}
+#about .col-lg-4{
+	padding: 75px 50px 50px 50px; 
+}
+.aboutDesc{
+	padding-top: 15px;
+}
+#signUp{
+	display:flex;
+	justify-content: center;
+}
+#signUp h5{
+	display: inline-block;
+	vertical-align: middle;
+}
+#signUp button{
+	margin: 0px 10px;
 }
