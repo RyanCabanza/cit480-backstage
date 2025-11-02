@@ -15,6 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="_css/styles.css">
 </head>
 <body>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 	<div class="container-fluid">
 		<div class="row" id="banner">
 			<div id="banner-text-box">
@@ -31,44 +32,61 @@
 			</div>
 		</div>
 		<nav class="row align-items-center">
-			<div class="col-lg-8 col-md-6">
+			<div class="col-8">
 				<a href="index.html">
 					<img src="https://placehold.co/285x65">
 				</a>
 			</div>
-			<div class="col-lg-4 col-md-6 text-center">
-				<div class="row" id="navLinks">
-					<div class="col-lg-3 col-6">
+			<div class="col-4 text-center">
+				<div class="row d-none d-lg-flex" id="navLinks">
+					<div class="col-3">
 						<a href="index.html">HOME</a>
 					</div>
-					<div class="col-lg-3 col-6">
+					<div class="col-3">
 						<a href="">LOGIN</a>
 					</div>
-					<div class="col-lg-3 col-6">
+					<div class="col-3">
 						<a href="">REVIEWS</a>
 					</div>
-					<div class="col-lg-3 col-6">
+					<div class="col-3">
 						<a href="">VENUES</a>
+					</div>
+				</div>
+				<div class="row d-flex d-lg-none">
+					<div class="dropdown">
+						<button type="button" id="hamburger" data-bs-toggle="dropdown" aria-expanded="false">
+						    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-list" viewBox="0 0 16 16">
+								<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+							</svg>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="hamburger">
+							<li><a class="dropdown-item" href="index.html">Home</a></li>
+							<li><a class="dropdown-item" href="#">Login</a></li>
+							<li><a class="dropdown-item" href="#">Reviews</a></li>
+							<li><a class="dropdown-item" href="#">Venues</a></li>
+						</ul>
 					</div>
 				</div>
 			</div>
 		</nav>
-		<div class="row" id="about">
-			<div class="col-lg-4">
+		<div class="row about">
+			<div class="col-lg-4" id="aboutItem1">
 				<img src="https://placehold.co/50x50">
 				<h4>Track your events</h4>
 				<p class="aboutDesc">Build an archive of past concerts, sporting events, comedy shows, or any live events you've attended, and create wishlists for future events.</p>
 			</div>
-			<div class="col-lg-4">
+			<div class="col-lg-4" id="aboutItem2">
 				<img src="https://placehold.co/50x50">
 				<h4>Write and share reviews</h4>
 				<p class="aboutDesc">Share your thoughts, give ratings, and post any photos or videos on different venues, and follow friends and other members to view theirs.</p>
 			</div>
-			<div class="col-lg-4">
+			<div class="col-lg-4" id="aboutItem3">
 				<img src="https://placehold.co/50x50">
 				<h4>View venue details</h4>
 				<p class="aboutDesc">Get information on the next venue you attend, including location, parking information, upcoming events, ratings, reviews, and much more.</p>
 			</div>
+		</div>
+		<div class="row">
 			<div class="col" id="signUp">
 				<h5>Join Backstage today!</h5>
 				<button type="submit">Sign Up</button>

@@ -26,6 +26,10 @@ nav{
 #navLinks{
 	padding: 25px 0px;
 }
+#hamburger{
+	background-color: transparent;
+	border-style: none;
+}
 
 
 /* Index
@@ -43,7 +47,7 @@ nav{
 	justify-content: center;
 }
 #input-field{
-	width: 80vw;
+	width: 70vw;
 	padding: 20px;
 }
 #banner-text-box{
@@ -59,16 +63,23 @@ nav{
 }
 
 /*---About---*/
-#about img{
+.about img{
 	display: inline-block;
 	padding-right: 15px;
 }
-#about h4{
+.about h4{
 	display: inline;
 	vertical-align: middle;
 }
-#about .col-lg-4{
-	padding: 75px 50px 50px 50px; 
+
+#aboutItem1{
+	padding: 75px 50px 25px 50px;
+}
+#aboutItem2{
+	padding: 25px 50px 25px 50px;
+}
+#aboutItem3{
+	padding: 25px 50px 50px 50px;
 }
 .aboutDesc{
 	padding-top: 15px;
@@ -93,4 +104,37 @@ nav{
 }
 .carousel td{
 	padding: 25px;
+}
+
+
+/* Media Queries
+------------------------------------*/
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+	#input-field{
+		width: 80vw;
+	}
+}
+
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+	#aboutItem1, #aboutItem2, #aboutItem3{
+		padding: 75px 50px 50px 50px; 
+	}
+}
+
+/*X-Large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
+}
+
+/*XX-Large devices (larger desktops, 1400px and up)*/
+@media (min-width: 1400px) {
+
 }
