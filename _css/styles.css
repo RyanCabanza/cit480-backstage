@@ -3,6 +3,9 @@
 div{
 	/*outline: solid red 1px;*/
 }
+a{
+	text-decoration: none;
+}
 
 
 /* Navigation 
@@ -74,10 +77,20 @@ nav{
 	display:flex;
 	justify-content: center;
 }
-#signUp h5{
-	display: inline-block;
-	vertical-align: middle;
-}
 #signUp button{
 	margin: 0px 10px;
+}
+
+/*---Carousel Sections---*/
+.sectionHeader{
+	padding-top: 75px;
+	border-bottom: 2px #585858 solid;
+	width: 95vw;
+	margin: 0px auto;
+}
+.carousel{
+	margin: 0px auto;
+}
+.carousel td{
+	padding: 25px;
 }
