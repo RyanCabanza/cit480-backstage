@@ -4,7 +4,7 @@ declare(strict_types=1);
 session_start();
 
 $dbHost = $_ENV['DB_HOST'] ?? '127.0.0.1';
-$dbName = $_ENV['DB_NAME'] ?? 'testdb2';
+$dbName = $_ENV['DB_NAME'] ?? 'test2db';
 $dbUser = $_ENV['DB_USER'] ?? 'root';
 $dbPass = $_ENV['DB_PASS'] ?? '';
 

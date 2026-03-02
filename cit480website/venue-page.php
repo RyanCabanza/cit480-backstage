@@ -9,6 +9,26 @@ if ($venueId <= 0) {
   exit('Missing or invalid venue id.');
 }
 
+$perPage = 10;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($page - 1) * $perPage;
+
+ //sorting 
+$sort = $_GET['sort'] ?? 'recent';
+
+switch ($sort) {
+    case 'rating_desc': // highest rated first
+        $orderBy = 'r.rating DESC, r.created_at DESC';
+        break;
+    case 'rating_asc': // lowest rated first
+        $orderBy = 'r.rating ASC, r.created_at DESC';
+        break;
+    case 'recent':
+    default:
+        $orderBy = 'r.created_at DESC';
+        break;
+}
+
 // Logged-in state
 $isLoggedIn = !empty($_SESSION['user_id']);
 $userName   = $_SESSION['user_name'] ?? '';
@@ -24,22 +44,33 @@ if (!$venue) {
 }
 
 // Stats: average rating + count
-$stats = $pdo->prepare('SELECT ROUND(AVG(rating),1) AS avg_rating, COUNT(*) AS cnt FROM reviews WHERE venue_id = ?');
+$stats = $pdo->prepare('
+  SELECT ROUND(AVG(rating),1) AS avg_rating, COUNT(*) AS cnt
+  FROM reviews
+  WHERE venue_id = ?
+');
 $stats->execute([$venueId]);
 $stats = $stats->fetch() ?: ['avg_rating' => null, 'cnt' => 0];
 
+$totalReviews = (int)$stats['cnt'];
+$totalPages = max(1, (int)ceil($totalReviews / $perPage));
+if ($page > $totalPages) $page = $totalPages;
+$offset = ($page - 1) * $perPage;
+
+
 // Recent reviews (show 10)
-$rx = $pdo->prepare('
+$rx = $pdo->prepare("
   SELECT r.id, r.rating, r.comment, r.created_at, u.name AS user_name
   FROM reviews r
   JOIN users u ON r.user_id = u.id
   WHERE r.venue_id = ?
-  ORDER BY r.created_at DESC
-  LIMIT 10
-');
+  ORDER BY $orderBy
+  LIMIT $perPage OFFSET $offset
+");
 $rx->execute([$venueId]);
 $reviews = $rx->fetchAll();
 ?>
+
 
 
 <!DOCTYPE html>
@@ -166,7 +197,7 @@ $reviews = $rx->fetchAll();
           <!-- Venue overview / key info -->
           <div class="card mb-4">
             <div class="card-body">
-              <h2 class="h5 mb-3">Overview</h2>
+              <h2 class="h5 mb-3">AI Overview</h2>
               <p class="mb-3">
                 Short description of the venue. Mention what kinds of events happen here,
                 what the vibe is like, and anything a first-time visitor should know.
@@ -193,66 +224,29 @@ $reviews = $rx->fetchAll();
             </div>
           </div>
 
-          <!-- Upcoming events list (simple wireframe-y list) -->
-          <div class="card mb-4">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2 class="h6 mb-0">Upcoming Events</h2>
-                <a id="venueEventsLink" href="https://examplevenue.com/events" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">
-                  More Info
-                </a>
-              </div>
-
-              <!-- Event row -->
-              <div class="d-flex mb-3 pb-3 border-bottom">
-                <div class="me-3 text-center">
-                  <div class="fw-bold">NOV</div>
-                  <div class="fs-4 fw-bold">12</div>
-                </div>
-                <div class="flex-grow-1">
-                  <p class="mb-1 fw-semibold">Artist Name · Tour Title</p>
-                  <p class="mb-0 text-muted small">Doors 7:00 PM · Show 8:00 PM</p>
-                </div>
-              </div>
-
-              <div class="d-flex mb-3 pb-3 border-bottom">
-                <div class="me-3 text-center">
-                  <div class="fw-bold">NOV</div>
-                  <div class="fs-4 fw-bold">18</div>
-                </div>
-                <div class="flex-grow-1">
-                  <p class="mb-1 fw-semibold">Home Team vs. Away Team</p>
-                  <p class="mb-0 text-muted small">Tip-off 6:30 PM</p>
-                </div>
-              </div>
-
-              <div class="d-flex">
-                <div class="me-3 text-center">
-                  <div class="fw-bold">DEC</div>
-                  <div class="fs-4 fw-bold">02</div>
-                </div>
-                <div class="flex-grow-1">
-                  <p class="mb-1 fw-semibold">Comedy Night Live</p>
-                  <p class="mb-0 text-muted small">8:00 PM · 18+</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      
+         
 
           <!-- Reviews header + filter row -->
           <div class="d-flex justify-content-between align-items-center mb-2 mt-4">
+            <div id="reviews"></div>
             <h2 class="h5 mb-0">Reviews</h2>
             <div class="d-flex gap-2">
+              <!--
               <select class="form-select form-select-sm" style="max-width: 180px;">
                 <option selected>Sort by: Most recent</option>
                 <option>Highest rated</option>
                 <option>Lowest rated</option>
               </select>
-              <select class="form-select form-select-sm" style="max-width: 160px;">
-                <option selected>All event types</option>
-                <option>Concert</option>
-                <option>Sports</option>
-                <option>Comedy</option>
+              -->
+              <select
+                  id="sortSelect"
+                  class="form-select form-select-sm"
+                  style="max-width: 180px;"
+              >
+                  <option value="recent" <?= $sort === 'recent' ? 'selected' : '' ?>>Sort by: Most recent</option>
+                  <option value="rating_desc" <?= $sort === 'rating_desc' ? 'selected' : '' ?>>Highest rated</option>
+                  <option value="rating_asc" <?= $sort === 'rating_asc' ? 'selected' : '' ?>>Lowest rated</option>
               </select>
             </div>
           </div>
@@ -369,28 +363,75 @@ $reviews = $rx->fetchAll();
             </div>
           </article> -->
 
-          <!-- Pagination placeholder -->
-          <nav aria-label="Review pages" class="mt-3">
-            <ul class="pagination">
-              <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-              </li>
-              <li class="page-item active">
-                <span class="page-link">1</span>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-          </nav>
+         <?php if ($totalReviews > 0 && $totalPages > 1): ?>
+              <nav aria-label="Review pages" class="mt-3">
+                <ul class="pagination">
+
+                  <!-- Previous -->
+                  <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                    <a class="page-link"
+                      href="venue-page.php?id=<?= (int)$venueId ?>&page=<?= max(1, $page - 1) ?>#reviews">
+                      Previous
+                    </a>
+                  </li>
+
+                  <?php
+                    // show up to 5 page buttons
+                    $start = max(1, $page - 2);
+                    $end   = min($totalPages, $page + 2);
+
+                    // keep it 5 wide when near edges
+                    if (($end - $start) < 4) {
+                      $start = max(1, $end - 4);
+                      $end   = min($totalPages, $start + 4);
+                    }
+                  ?>
+
+                  <?php if ($start > 1): ?>
+                    <li class="page-item">
+                      <a class="page-link" href="venue-page.php?id=<?= (int)$venueId ?>&page=1#reviews">1</a>
+                    </li>
+                    <?php if ($start > 2): ?>
+                      <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+                  <?php endif; ?>
+
+                  <?php for ($p = $start; $p <= $end; $p++): ?>
+                    <li class="page-item <?= ($p === $page) ? 'active' : '' ?>">
+                      <a class="page-link" href="venue-page.php?id=<?= (int)$venueId ?>&page=<?= $p ?>#reviews">
+                        <?= $p ?>
+                      </a>
+                    </li>
+                  <?php endfor; ?>
+
+                  <?php if ($end < $totalPages): ?>
+                    <?php if ($end < $totalPages - 1): ?>
+                      <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+                    <li class="page-item">
+                      <a class="page-link" href="venue-page.php?id=<?= (int)$venueId ?>&page=<?= $totalPages ?>#reviews">
+                        <?= $totalPages ?>
+                      </a>
+                    </li>
+                  <?php endif; ?>
+
+                  <!-- Next -->
+                  <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                    <a class="page-link"
+                      href="venue-page.php?id=<?= (int)$venueId ?>&page=<?= min($totalPages, $page + 1) ?>#reviews">
+                      Next
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+            <?php endif; ?>
         </section>
 
         <!-- RIGHT COLUMN: rating breakdown, location, quick facts -->
         <aside class="col-12 col-lg-4 mt-4 mt-lg-0">
 
-          <!-- Rating breakdown -->
+          <!-- Rating breakdown 
           <div class="card mb-4">
             <div class="card-body">
               <h2 class="h6 mb-3">Rating Breakdown</h2>
@@ -436,7 +477,7 @@ $reviews = $rx->fetchAll();
               </div>
             </div>
           </div>
-
+                        -->
           <!-- Location / map block -->
           <div class="card mb-4">
             <div class="card-body">
@@ -465,7 +506,7 @@ $reviews = $rx->fetchAll();
             </div>
           </div>
 
-          <!-- Quick highlights -->
+          <!-- Quick highlights
           <div class="card">
             <div class="card-body">
               <h2 class="h6 mb-3">Highlights</h2>
@@ -477,6 +518,7 @@ $reviews = $rx->fetchAll();
               </ul>
             </div>
           </div>
+                    -->
         </aside>
       </main>
 
@@ -491,6 +533,17 @@ $reviews = $rx->fetchAll();
  <!--Javascript code for future use integration with the backend -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const sortSelect = document.getElementById('sortSelect');
+  if (!sortSelect) return;
+
+  sortSelect.addEventListener('change', function () {
+    const sort = this.value;
+    window.location.href =
+      "venue-page.php?id=<?= (int)$venueId ?>&sort=" + sort + "&page=1#reviews";
+  });
+});
+</script>
   </body>
 </html>

@@ -15,30 +15,25 @@ $stmt = $pdo->query("
 $venues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt = $pdo->query("
-  SELECT v.id, v.name, v.image_url, v.created_at, MAX(r.created_at) AS last_reviewed_at, COUNT(r.id) AS review_count
+  SELECT v.id, v.name, v.image_url, MAX(r.created_at) AS last_reviewed_at
   FROM venues v
-  LEFT JOIN reviews r ON r.venue_id = v.id
-  GROUP BY v.id, v.name, v.image_url, v.created_at
-  ORDER BY
-    (MAX(r.created_at) IS NOT NULL) DESC,  
-    last_reviewed_at DESC,              
-    v.created_at DESC                    
+  JOIN reviews r ON r.venue_id = v.id
+  GROUP BY v.id, v.name, v.image_url
+  ORDER BY last_reviewed_at DESC
   LIMIT 6
 ");
 $recentlyReviewed = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt = $pdo->query("
-  SELECT v.id, v.name, v.image_url, COALESCE(AVG(r.rating),0) AS avg_rating,
-  COUNT(r.id) AS review_count
+  SELECT v.id, v.name, v.image_url,
+         AVG(r.rating) AS avg_rating,
+         COUNT(*) AS review_count
   FROM venues v
-  LEFT JOIN reviews r ON r.venue_id = v.id
+  JOIN reviews r ON r.venue_id = v.id
   GROUP BY v.id, v.name, v.image_url
-  ORDER BY
-	CASE WHEN COUNT(r.id) >=3 THEN 0 ELSE 1 END ASC, 
-	COALESCE(AVG(r.rating), 0) DESC,
-	COUNT(r.id) DESC,
-	v.created_at DESC
-	LIMIT 6
+  HAVING COUNT(*) >= 3
+  ORDER BY avg_rating DESC, review_count DESC
+  LIMIT 6
 ");
 $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -91,8 +86,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 					</a>
 				</div>
 				<div class="col-4 text-center">
-					
-				 <!-- <div class="row d-none d-lg-flex" id="navLinks">
+					<div class="row d-none d-lg-flex" id="navLinks">
   						<?php if ($isLoggedIn): ?>
     						<div class="col-6 text-end">
       							<span class="fw-semibold">Welcome, <?= htmlspecialchars($userName) ?>!</span>
@@ -115,33 +109,6 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
     					</div>
   						<?php endif; ?>
 						</div>
-						-->
-
-				<div class="row d-none d-lg-flex" id="navLinks">
-				<div class="col-3">
-					<a href="index.php">HOME</a>
-				</div>
-
-				<div class="col-3">
-					<a href="#">PROFILE</a>
-				</div>
-
-				<div class="col-3">
-					<a href="#">VENUES</a>
-				</div>
-
-				<div class="col-3">
-					<?php if ($isLoggedIn): ?>
-					<div class="small">
-						<div class="fw-semibold">Welcome, <?= htmlspecialchars($userName) ?></div>
-						<a href="logout.php" class="text-danger">LOGOUT</a>
-					</div>
-					<?php else: ?>
-					<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">LOGIN</a>
-					<?php endif; ?>
-				</div>
-				</div>
-
 
 					<div class="row d-flex d-lg-none">
 						<div class="dropdown">
@@ -152,17 +119,9 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="hamburger">
 								<li><a class="dropdown-item" href="index.php">Home</a></li>
-								<li><a class="dropdown-item" href="#">Profile</a></li>
-								<li><a class="dropdown-item" href="#">Venues</a></li>
-
-							<?php if ($isLoggedIn): ?>
-								<li><hr class="dropdown-divider"></li>
-								<li><span class="dropdown-item-text">Logged in as <?= htmlspecialchars($userName) ?></span></li>
-								<li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
-							<?php else: ?>
-								<li><hr class="dropdown-divider"></li>
 								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
-							<?php endif; ?>
+								<li><a class="dropdown-item" href="#">Reviews</a></li>
+								<li><a class="dropdown-item" href="#">Venues</a></li>
 							</ul>
 						</div>
 					</div>
@@ -214,11 +173,6 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 									>
 									<div class="card-body">
 										<h5><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ?></h5>
-									<?php if (!empty($row['last_reviewed_at'])): ?>
-										<span class="badge bg-primary">Recently reviewed</span>
-									<?php else: ?>
-										<span class="badge bg-secondary">No reviews yet</span>
-									<?php endif; ?>
 									</div>
 									</div>
 								</a>
@@ -253,11 +207,6 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 									>
 									<div class="card-body">
 										<h5><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ?></h5>
-											<?php if ((int)$row['review_count'] >= 3): ?>
-												<span class="badge bg-success">Popular</span>
-											<?php else: ?>
-												<span class="badge bg-secondary">New</span>
-											<?php endif; ?>
 									</div>
 									</div>
 								</a>

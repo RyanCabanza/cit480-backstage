@@ -53,7 +53,7 @@ if ($errors) {
     'rating' => $rating,
     'comment' => $comment
   ];
-  header("Location: venue-page.php?id={$venueId}");
+  header("Location: venue-page.php?id={$venueId}#write-review");
   exit;
 }
 
@@ -65,5 +65,5 @@ $ins = $pdo->prepare('
 $ins->execute([$venueId, $userId, $rating, $comment]);
 
 $_SESSION['flash_success'] = 'Thanks for your review!';
-header("Location: venue-page.php?id={$venueId}");
+header("Location: venue-page.php?id={$venueId}#reviews");
 exit;

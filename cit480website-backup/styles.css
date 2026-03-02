@@ -1,0 +1,438 @@
+/* Global styles 
+------------------------------------*/
+div{
+	/*outline: solid red 1px;*/
+}
+a{
+	text-decoration: none;
+}
+body{
+	/*Turn on to preview mobile*/
+	/*width: 320px;*/
+}
+
+/* Navigation 
+------------------------------------*/
+nav{ 
+	background-color: #585858; }
+nav	img {
+		padding: 25px;
+	}
+	
+
+#navLinks a{
+	text-decoration: none;
+	font-weight: bold;
+	color: #fff;
+	line-height: 30px;
+	white-space: nowrap;
+}
+#navLinks{
+	padding: 25px 0px;
+}
+#hamburger{
+	background-color: transparent;
+	border-style: none;
+}
+
+
+/* Login & Sign Up Modals 
+------------------------------------*/
+#loginModal .modal-dialog, #signUpModal .modal-dialog{
+	margin-top: 25vh;
+}
+#loginModal .modal-footer, #signUpModal .modal-footer{
+	display: block;
+}
+#loginModal .btn-close, #signUpModal .btn-close{
+	position: absolute;
+	right: 1rem;
+}
+
+
+/* Index
+------------------------------------*/
+
+/*---Banner---*/
+#banner{
+	height: 500px;
+	/*background: url(https://placehold.co/1920x500),
+	no-repeat fixed center / cover;*/
+	background-color: #dddddd;
+}
+#search-container{
+	display: flex;
+	justify-content: center;
+}
+#input-field{
+	width: 70vw;
+	padding: 20px;
+}
+#banner-text-box{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+#banner-text-content{
+	width: 80vw;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 50px;
+}
+
+/*---About---*/
+.about img{
+	display: inline-block;
+	padding-right: 15px;
+}
+.about h4{
+	display: inline;
+	vertical-align: middle;
+}
+
+#aboutItem1{
+	padding: 75px 25px 25px 25px;
+}
+#aboutItem2{
+	padding: 25px 25px 25px 25px;
+}
+#aboutItem3{
+	padding: 25px 25px 50px 25px;
+}
+.aboutDesc{
+	padding-top: 15px;
+}
+#signUp{
+	display:flex;
+	justify-content: center;
+}
+#signUp button{
+	margin: 0px 10px;
+}
+
+/*---Carousel Sections---*/
+.sectionHeader{
+	padding-top: 75px;
+	border-bottom: 2px #585858 solid;
+	width: 95vw;
+	margin: 0px auto;
+}
+.carousel{
+	margin: 0px auto;
+}
+.carousel td{
+	padding: 25px;
+}
+
+/* Footer
+------------------------------------*/
+footer{
+	margin-top: 100px;
+	text-align: center;
+	border-top: 2px solid #585858;
+	padding: 25px;
+}
+
+
+/* Media Queries
+------------------------------------*/
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+	#input-field{
+		width: 80vw;
+	}
+}
+
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+	#aboutItem1, #aboutItem2, #aboutItem3{
+		padding: 75px 50px 50px 50px; 
+	}
+}
+
+/*X-Large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
+}
+
+/*XX-Large devices (larger desktops, 1400px and up)*/
+@media (min-width: 1400px) {
+
+}
+
+
+/* =================== INDEX PAGE COLOR SCHEME (Matches venue-page.html) ======================= */
+body {
+  background-color: #121212;
+  color: #f2f2f2;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #ffffff;
+}
+
+/* Navbar */
+nav {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #2a2a2a;
+}
+nav a {
+  color: #f2f2f2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+nav a:hover {
+  color: #e83e8c;
+}
+
+/* Banner */
+#banner {
+  background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+  color: #ffffff;
+  padding: 80px 0;
+  text-align: center;
+}
+
+/* Search box */
+#search-container input[type="search"] {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  color: #f2f2f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+#search-container button {
+  background-color: #e83e8c;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+#search-container button:hover {
+  background-color: #00c2a8;
+}
+
+/* Cards (Recently Reviewed, Popular Venues) */
+.card {
+  background-color: #1e1e1e;
+  color: #f2f2f2;
+  border: 1px solid #2a2a2a;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+table.carousel .card {
+	width: 300px;
+}
+
+body.venue-page .card {
+  	width: 100%;
+}
+
+.card-img-top {
+	width: 100%;
+	height: 160px;
+	object-fit: cover;
+	object-position: center;
+	display: block;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.card h5 {
+  color: #e83e8c;
+}
+
+/* Buttons */
+button, .btn {
+  background-color: #e83e8c;
+  border: none;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+button:hover, .btn:hover {
+  background-color: #00c2a8;
+}
+
+/* Footer */
+footer {
+  background-color: #1e1e1e;
+  border-top: 1px solid #2a2a2a;
+  color: #aaaaaa;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* Venue Pages-----------------------------------------------------------------------------------
+------------------------------------*/
+
+body.venue-page {
+	font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	/* dark indie background with a soft gradient */
+	background:
+		radial-gradient(circle at top left, #ff7ac7 0, transparent 55%),
+		radial-gradient(circle at bottom right, #7cf0ff 0, transparent 55%),
+		#050816;
+	color: #f5f5f5;
+}
+
+/* Container spacing on venue pages */
+body.venue-page .container-fluid {
+	max-width: 1200px;
+	padding: 32px 16px 64px;
+}
+
+/* Hero section: title + rating row */
+#venue-hero {
+	border-bottom: 1px solid rgba(255,255,255,0.12);
+	margin-bottom: 24px;
+}
+
+/* Hero text */
+body.venue-page #venue-hero h1 {
+	font-family: 'Space Grotesk', system-ui, sans-serif;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	color: #ffffff;
+}
+
+/* Hero meta text (address, type) */
+body.venue-page #venue-hero p.text-muted {
+	color: rgba(240,240,240,0.7) !important;
+}
+
+/* Breadcrumbs */
+body.venue-page .breadcrumb {
+	background: transparent;
+	padding: 0;
+	margin-bottom: 0.5rem;
+}
+body.venue-page .breadcrumb-item a {
+	color: #7cf0ff;
+}
+body.venue-page .breadcrumb-item + .breadcrumb-item::before {
+	color: rgba(255,255,255,0.4);
+}
+
+/* Primary CTA button (Write a Review) */
+body.venue-page .btn-primary {
+	background: linear-gradient(135deg, #ff7ac7, #ffb36b);
+	border: none;
+	color: #1b1022;
+	font-weight: 600;
+	border-radius: 999px;
+	padding-inline: 20px;
+	box-shadow: 0 0 18px rgba(255, 122, 199, 0.35);
+}
+body.venue-page .btn-primary:hover {
+	filter: brightness(1.05);
+	transform: translateY(-1px);
+}
+
+/* Cards (overview, events, reviews, sidebar) */
+body.venue-page .card {
+	background: rgba(11, 15, 25, 0.96);
+	border-radius: 18px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 18px 35px rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(12px);
+}
+body.venue-page .card-body {
+	color: #f5f5f5;
+}
+
+/* Section headings inside cards */
+body.venue-page .card h2,
+body.venue-page .card h5,
+body.venue-page .card h6 {
+	font-family: 'Space Grotesk', system-ui, sans-serif;
+	color: #ffffff;
+}
+
+/* Venue hero image */
+body.venue-page .card img.img-fluid.rounded {
+	border-radius: 20px;
+	object-fit: cover;
+	max-height: 420px;
+	width: 100%;
+}
+
+/* Small label text */
+body.venue-page .text-muted.small {
+	color: rgba(220,220,220,0.7) !important;
+}
+
+/* Form controls (filters) */
+body.venue-page .form-select.form-select-sm {
+	background-color: rgba(20, 24, 40, 0.9);
+	color: #f5f5f5;
+	border: 1px solid rgba(255,255,255,0.25);
+	border-radius: 999px;
+}
+
+/* Progress bars (rating breakdown) */
+body.venue-page .progress {
+	background-color: rgba(255,255,255,0.08);
+	border-radius: 999px;
+	overflow: hidden;
+}
+body.venue-page .progress-bar {
+	background: linear-gradient(90deg, #7cf0ff, #ff7ac7);
+}
+
+/* Review cards: subtle accent border */
+body.venue-page article.card {
+	border-left: 3px solid rgba(255, 122, 199, 0.7);
+}
+
+/* Location map placeholder */
+body.venue-page .ratio.bg-light {
+	background: radial-gradient(circle at top, #22263b 0, #0d101b 60%);
+	color: rgba(230,230,230,0.7);
+}
+
+/* Footer on venue page */
+body.venue-page footer {
+	border-top: none;
+	margin-top: 48px;
+}
+body.venue-page footer .text-muted {
+	color: rgba(220,220,220,0.7) !important;
+}
+
+#venueWebsiteLink {
+  color: #ffffff;
+  text-decoration: none;
+}
+#venueWebsiteLink:hover {
+  color: #ff7ac7;
+  text-decoration: underline;
+}
+
+
+/* contact form stuff */
+.form-container .input-group{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.form-container .input-field,
+.form-container .message-field{
+  width: 100%;
+}
+.form-container input,
+.form-container textarea{
+  width: 100%;
+  display: block;
+}
