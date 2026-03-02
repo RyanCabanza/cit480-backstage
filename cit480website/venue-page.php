@@ -520,6 +520,7 @@ $reviews = $rx->fetchAll();
           </div>
                     -->
         </aside>
+        	
       </main>
 
       <footer class="row mt-5 py-4 border-top">
@@ -529,11 +530,131 @@ $reviews = $rx->fetchAll();
       </footer>
 
     </div>
+<!-- LOGIN MODAL -->
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header justify-content-center">
+		      	<h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		       <form id="loginForm" method="post" action="login.php">
+  				<div class="mb-3">
+    			<label for="loginEmail" class="form-label">Email address</label>
+    			<input type="email" class="form-control" id="loginEmail" name="email" required>
+  				</div>
+  				<div class="mb-3">
+   				 <label for="loginPassword" class="form-label">Password</label>
+   				 <input type="password" class="form-control" id="loginPassword" name="password" required>
+ 			 </div>
+  			<button type="submit">Login</button>
+			</form>
 
- <!--Javascript code for future use integration with the backend -->
+		      </div>
+		      <div class="modal-footer">
+		        <p class="mb-0 small">New around here? <a href="#" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign up</a></p>
+		        <p class="mb-0 small"><a href="#">Forgot password?</a></p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+
+		<!-- SIGN UP MODAL -->
+		<div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header justify-content-center">
+		      	<h1 class="modal-title fs-5" id="signUpModalLabel">Sign Up</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <form id="signUpForm" method="post" action="signup.php">
+  				<div class="mb-3">
+    				<label for="signUpUser" class="form-label">Name or Username</label>
+    				<input type="text" class="form-control" id="signUpUser" name="username" required>
+  				</div>
+  				<div class="mb-3">
+    				<label for="signUpEmail" class="form-label">Email address</label>
+    				<input type="email" class="form-control" id="signUpEmail" name="email" required>
+ 				 </div>
+  				<div class="mb-3">
+   					 <label for="signUpPassword" class="form-label">Password</label>
+   					 <input type="password" class="form-control" id="signUpPassword" name="password" required>
+ 				 </div>
+ 				 <div class="mb-3">
+   					 <label for="passwordConfirmation" class="form-label">Password Confirmation</label>
+    					<input type="password" class="form-control" id="passwordConfirmation" name="password_confirm" required>
+  				</div>
+ 				 <button type="submit">Sign Up</button>
+				</form>
+
+		      </div>
+		      <div class="modal-footer">
+		        <p class="mb-0 small">Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></p>
+		        <p class="mb-0 small"><a href="#">Didn't receive confirmation email?</a></p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<!-- Login + Signup AJAX -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(loginForm);
+
+      const res = await fetch('login.php', {
+        method: 'POST',
+        body: data,
+        credentials: 'same-origin'
+      });
+
+      const json = await res.json();
+
+      if (json.ok) {
+        bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
+        location.reload();
+      } else {
+        alert(json.error || 'Login failed.');
+      }
+    });
+  }
+
+  const signUpForm = document.getElementById('signUpForm');
+  if (signUpForm) {
+    signUpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(signUpForm);
+
+      const res = await fetch('signup.php', {
+        method: 'POST',
+        body: data,
+        credentials: 'same-origin'
+      });
+
+      const json = await res.json();
+
+      if (json.ok) {
+        bootstrap.Modal.getInstance(document.getElementById('signUpModal'))?.hide();
+        location.reload();
+      } else {
+        alert(json.error || 'Sign up failed.');
+      }
+    });
+  }
+});
+</script>
+
+<!-- Sort dropdown -->
+<script>
 document.addEventListener('DOMContentLoaded', function () {
   const sortSelect = document.getElementById('sortSelect');
   if (!sortSelect) return;
@@ -545,5 +666,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
-  </body>
+
+</body>
 </html>
