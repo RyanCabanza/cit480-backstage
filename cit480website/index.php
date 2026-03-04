@@ -123,7 +123,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				</div>
 
 				<div class="col-3">
-					<a href="#">PROFILE</a>
+					<a href="my_account.HTML">PROFILE</a>
 				</div>
 
 				<div class="col-3">
