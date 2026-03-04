@@ -22,3 +22,76 @@ try {
   exit('DB connection failed.');
 }
 
+// ---- Gemini AI config ----
+// Put your Gemini key in an environment variable if possible:
+$geminiKey = $_ENV['GEMINI_API_KEY'] ?? '';
+if ($geminiKey === '') {
+  $geminiKey = 'AIzaSyCdk9jtU4HJ0ppjXapZj8Ir0yPq8HA9R18';
+}
+
+define('GEMINI_API_KEY', $geminiKey);
+define('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');
+
+function gemini_generate_venue_overview(string $venueName, array $reviews): string {
+  // Keep prompt small/cheap
+  $sample = array_slice($reviews, 0, 12);
+
+  $reviewsText = "";
+  foreach ($sample as $i => $r) {
+    $rating = isset($r['rating']) ? "(" . (int)$r['rating'] . "/5) " : "";
+    $comment = trim(preg_replace("/\s+/", " ", (string)($r['comment'] ?? '')));
+    if ($comment === '') continue;
+    $reviewsText .= ($i+1) . ". " . $rating . $comment . "\n";
+  }
+
+  $prompt =
+    "Write a single AI overview for the venue page.\n" .
+    "Venue: {$venueName}\n\n" .
+    "Requirements:\n" .
+    "- Plain text only\n" .
+    "- 120–220 words\n" .
+    "- Start with one-line overall sentiment (e.g., Mostly positive — 4/5: ...)\n" .
+    "- Mention common praises and common complaints\n" .
+    "- Include 2 short representative quotes in quotes\n" .
+    "- Do NOT include personal user info\n" .
+    "- If there are no reviews, output exactly: No reviews yet for this venue.\n\n" .
+    "Reviews:\n{$reviewsText}\n";
+
+  if (GEMINI_API_KEY === '') {
+    throw new Exception('Missing GEMINI_API_KEY.');
+  }
+
+  $url = GEMINI_API_URL . '?key=' . urlencode(GEMINI_API_KEY);
+
+  $payload = [
+    "contents" => [
+      ["parts" => [["text" => $prompt]]]
+    ],
+    "generationConfig" => [
+      "temperature" => 0.2,
+      "maxOutputTokens" => 3000
+    ]
+  ];
+
+  $ch = curl_init($url);
+  curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+    CURLOPT_POSTFIELDS => json_encode($payload),
+    CURLOPT_TIMEOUT => 20,
+  ]);
+
+  $resp = curl_exec($ch);
+  $err  = curl_error($ch);
+  $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+
+  if ($resp === false) throw new Exception("Gemini curl error: " . $err);
+  if ($code < 200 || $code >= 300) throw new Exception("Gemini HTTP {$code}: " . $resp);
+
+  $json = json_decode($resp, true);
+  $text = $json['candidates'][0]['content']['parts'][0]['text'] ?? '';
+
+  return trim((string)$text);
+}

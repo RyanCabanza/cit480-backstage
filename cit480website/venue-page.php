@@ -194,35 +194,74 @@ $reviews = $rx->fetchAll();
 
           </div>
 
-          <!-- Venue overview / key info -->
+          <!-- Venue overview / key info (AI overview) -->
           <div class="card mb-4">
             <div class="card-body">
               <h2 class="h5 mb-3">AI Overview</h2>
-              <p class="mb-3">
-                Short description of the venue. Mention what kinds of events happen here,
-                what the vibe is like, and anything a first-time visitor should know.
-              </p>
 
-              <div class="row">
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Capacity</p>
-                  <p class="mb-0 fw-semibold">15,000</p>
+              <?php
+                // ai fields expected on $venue: ai_summary, ai_summary_updated_at, ai_summary_status
+                $aiSummary = $venue['ai_summary'] ?? null;
+                $aiUpdated = $venue['ai_summary_updated_at'] ?? null;
+                $aiStatus  = $venue['ai_summary_status'] ?? 'idle';
+              ?>
+
+              <?php if ($aiStatus === 'pending'): ?>
+                <div class="alert alert-warning py-2" role="alert">
+                  AI overview is being generated — check back in a moment.
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Type</p>
-                  <p class="mb-0 fw-semibold">Indoor Arena</p>
+              <?php elseif ($aiStatus === 'error'): ?>
+                <div class="alert alert-danger py-2" role="alert">
+                  AI overview temporarily unavailable. We're looking into it.
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Parking</p>
-                  <p class="mb-0 fw-semibold">On-site & lots</p>
+              <?php endif; ?>
+
+              <?php if (!empty($aiSummary)): ?>
+                <article class="ai-overview mb-3">
+                  <?php
+                    // Split into paragraphs on double newlines and safely escape
+                    $paragraphs = preg_split("/\r?\n\r?\n/", trim($aiSummary));
+                    foreach ($paragraphs as $p) {
+                        // trim then escape
+                        $p = trim($p);
+                        if ($p === '') continue;
+                        echo '<p class="mb-2">' . nl2br(htmlspecialchars($p, ENT_QUOTES, 'UTF-8')) . '</p>';
+                    }
+                  ?>
+                  <footer class="ai-meta">
+                    <small class="text-muted">
+                      Updated <?php echo htmlspecialchars($aiUpdated ? date('M j, Y, g:ia', strtotime($aiUpdated)) : '—'); ?>
+                    </small>
+                  </footer>
+                </article>
+              <?php else: ?>
+                <div class="mb-3 text-muted">
+                  <p class="mb-2">Short description of the venue. Mention what kinds of events happen here, what the vibe is like, and anything a first-time visitor should know.</p>
+                  <p class="mb-0">No AI overview is available yet for this venue.</p>
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Accessibility</p>
-                  <p class="mb-0 fw-semibold">Wheelchair access</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              <?php endif; ?>
+
+    <!-- Keep the grid of quick facts below the overview -->
+    <div class="row mt-3">
+      <div class="col-6 col-md-3 mb-3">
+        <p class="mb-1 text-muted small">Capacity</p>
+        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['capacity'] ?? '15,000') ?></p>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <p class="mb-1 text-muted small">Type</p>
+        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['type'] ?? 'Indoor Arena') ?></p>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <p class="mb-1 text-muted small">Parking</p>
+        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['parking'] ?? 'On-site & lots') ?></p>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <p class="mb-1 text-muted small">Accessibility</p>
+        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['accessibility'] ?? 'Wheelchair access') ?></p>
+      </div>
+    </div>
+  </div>
+</div>
 
       
          
