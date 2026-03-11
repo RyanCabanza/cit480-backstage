@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 $dbHost = $_ENV['DB_HOST'] ?? '127.0.0.1';
-$dbName = $_ENV['DB_NAME'] ?? 'test2db';
+$dbName = $_ENV['DB_NAME'] ?? 'testdb3';
 $dbUser = $_ENV['DB_USER'] ?? 'root';
 $dbPass = $_ENV['DB_PASS'] ?? '';
 
