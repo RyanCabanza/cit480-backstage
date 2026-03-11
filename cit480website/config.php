@@ -1,10 +1,9 @@
 <?php
 // config.php
 declare(strict_types=1);
-session_start();
 
 $dbHost = $_ENV['DB_HOST'] ?? '127.0.0.1';
-$dbName = $_ENV['DB_NAME'] ?? 'testdb2';
+$dbName = $_ENV['DB_NAME'] ?? 'test2db';
 $dbUser = $_ENV['DB_USER'] ?? 'root';
 $dbPass = $_ENV['DB_PASS'] ?? '';
 
@@ -26,7 +25,7 @@ try {
 // Put your Gemini key in an environment variable if possible:
 $geminiKey = $_ENV['GEMINI_API_KEY'] ?? '';
 if ($geminiKey === '') {
-  $geminiKey = 'AIzaSyA9_7PSDq5cxOfKphDFQlBsLXljDSTeOKo';
+  $geminiKey = 'AIzaSyDwM4pskhqsPR9tPow6UxESfUDcIlRoP80';
 }
 
 define('GEMINI_API_KEY', $geminiKey);
@@ -95,3 +94,33 @@ function gemini_generate_venue_overview(string $venueName, array $reviews): stri
 
   return trim((string)$text);
 }
+
+
+require_once __DIR__ . '/db_session_handler.php';
+$handler = new DbSessionHandler($pdo);
+session_set_save_handler($handler, true);
+
+session_set_cookie_params ([
+'lifetime' => 0,
+'path' => '/',
+'httponly' => true,
+'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+'samesite' => 'Lax',
+]);
+
+ini_set('session.gc_maxlifetime', 300); // 5 minute
+
+session_start();
+
+$timeout = 300;
+
+if (isset($_SESSION['LAST_ACTIVITY']) &&
+  (time() - $_SESSION['LAST_ACTIVITY']) > $timeout) {
+    session_unset();
+    session_destroy();
+
+    header("Location: index.php?reason=timeout");
+    exit;
+  }
+
+  $_SESSION['LAST_ACTIVITY'] = time();

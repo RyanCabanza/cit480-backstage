@@ -60,13 +60,20 @@ $offset = ($page - 1) * $perPage;
 
 // Recent reviews (show 10)
 $rx = $pdo->prepare("
-  SELECT r.id, r.rating, r.comment, r.created_at, u.name AS user_name
+  SELECT
+    r.id,
+    r.rating,
+    r.comment,
+    r.created_at,
+    u.name AS user_name,
+    u.profile_image_path
   FROM reviews r
   JOIN users u ON r.user_id = u.id
   WHERE r.venue_id = ?
   ORDER BY $orderBy
   LIMIT $perPage OFFSET $offset
 ");
+
 $rx->execute([$venueId]);
 $reviews = $rx->fetchAll();
 ?>
@@ -92,7 +99,7 @@ $reviews = $rx->fetchAll();
   >
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="styles.css?v=3">
+    <link rel="stylesheet" type="text/css" href="styles.css?v=2">
     </head>
       <body class="venue-page">
         <div class="container-fluid">
@@ -194,10 +201,10 @@ $reviews = $rx->fetchAll();
 
           </div>
 
-          <!-- Venue overview / key info (AI overview) -->
+          <!-- Venue overview / key info -->
           <div class="card mb-4">
             <div class="card-body">
-              <h2 class="h5 mb-3">AI Overview</h2>
+               <h2 class="h5 mb-3">AI Overview</h2>
 
               <?php
                 // ai fields expected on $venue: ai_summary, ai_summary_updated_at, ai_summary_status
@@ -241,27 +248,27 @@ $reviews = $rx->fetchAll();
                 </div>
               <?php endif; ?>
 
-    <!-- Keep the grid of quick facts below the overview -->
-    <div class="row mt-3">
-      <div class="col-6 col-md-3 mb-3">
-        <p class="mb-1 text-muted small">Capacity</p>
-        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['capacity'] ?? '15,000') ?></p>
-      </div>
-      <div class="col-6 col-md-3 mb-3">
-        <p class="mb-1 text-muted small">Type</p>
-        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['type'] ?? 'Indoor Arena') ?></p>
-      </div>
-      <div class="col-6 col-md-3 mb-3">
-        <p class="mb-1 text-muted small">Parking</p>
-        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['parking'] ?? 'On-site & lots') ?></p>
-      </div>
-      <div class="col-6 col-md-3 mb-3">
-        <p class="mb-1 text-muted small">Accessibility</p>
-        <p class="mb-0 fw-semibold"><?= htmlspecialchars($venue['accessibility'] ?? 'Wheelchair access') ?></p>
-      </div>
-    </div>
-  </div>
-</div>
+              
+              <div class="row">
+                <div class="col-6 col-md-3 mb-3">
+                  <p class="mb-1 text-muted small">Capacity</p>
+                  <p class="mb-0 fw-semibold">15,000</p>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                  <p class="mb-1 text-muted small">Type</p>
+                  <p class="mb-0 fw-semibold">Indoor Arena</p>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                  <p class="mb-1 text-muted small">Parking</p>
+                  <p class="mb-0 fw-semibold">On-site & lots</p>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                  <p class="mb-1 text-muted small">Accessibility</p>
+                  <p class="mb-0 fw-semibold">Wheelchair access</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
       
          
@@ -334,24 +341,53 @@ $reviews = $rx->fetchAll();
               <!-- Existing reviews from the database -->
               <?php if (!empty($reviews)): ?>
                 <?php foreach ($reviews as $rev): ?>
-                  <article class="card mb-3">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between">
-                        <div>
-                          <p class="mb-0 fw-semibold"><?= htmlspecialchars($rev['user_name']) ?></p>
-                          <p class="mb-0 text-muted small">
-                            Posted: <?= htmlspecialchars(date('M j, Y', strtotime($rev['created_at']))) ?>
-                          </p>
-                        </div>
-                        <div class="text-end">
-                          <p class="mb-0 fw-semibold"><?= (float)$rev['rating'] ?> / 5</p>
-                        </div>
-                      </div>
-                      <hr>
-                      <p class="mb-2"><?= nl2br(htmlspecialchars($rev['comment'] ?? '')) ?></p>
-                    </div>
-                  </article>
-                <?php endforeach; ?>
+                  <?php
+                  $avatar = !empty($rev['profile_image_path'])
+                  ? $rev['profile_image_path']
+                 : 'https://placehold.co/48x48';
+              ?>
+ 
+
+  <article class="card mb-3">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+
+          <img
+            src="<?= htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') ?>"
+            alt="Profile picture"
+            class="review-avatar"
+            onerror="this.onerror=null;this.src='Images/default-avatar.png';"
+        />
+
+          <div>
+            <p class="mb-0 fw-semibold">
+              <?= htmlspecialchars($rev['user_name']) ?>
+            </p>
+            <p class="mb-0 text-muted small">
+              Posted: <?= htmlspecialchars(date('M j, Y', strtotime($rev['created_at']))) ?>
+            </p>
+          </div>
+
+        </div>
+
+        <div class="text-end">
+          <p class="mb-0 fw-semibold">
+            <?= (float)$rev['rating'] ?> / 5
+          </p>
+        </div>
+      </div>
+
+      <hr>
+
+      <p class="mb-2">
+        <?= nl2br(htmlspecialchars($rev['comment'] ?? '')) ?>
+      </p>
+
+    </div>
+  </article>
+<?php endforeach; ?>
               <?php else: ?>
                 <p class="text-muted">No reviews yet. Be the first to write one!</p>
               <?php endif; ?>

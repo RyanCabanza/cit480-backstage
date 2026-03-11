@@ -1,9 +1,6 @@
 <?php
 // review_create.php
 declare(strict_types=1);
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
 require __DIR__ . '/config.php'; // $pdo + session
 
 // Only accept POST
@@ -66,32 +63,6 @@ $ins = $pdo->prepare('
   VALUES (?, ?, ?, ?, NOW())
 ');
 $ins->execute([$venueId, $userId, $rating, $comment]);
-
-try {
-  $pdo->prepare("UPDATE venues SET ai_summary_status='pending' WHERE id=?")->execute([$venueId]);
-
-  $vn = $pdo->prepare("SELECT name FROM venues WHERE id=? LIMIT 1");
-  $vn->execute([$venueId]);
-  $venueName = (string)($vn->fetchColumn() ?: 'This venue');
-
-  $rq = $pdo->prepare("SELECT rating, comment FROM reviews WHERE venue_id=? ORDER BY created_at DESC LIMIT 200");
-  $rq->execute([$venueId]);
-  $allReviews = $rq->fetchAll(PDO::FETCH_ASSOC);
-  if (!function_exists('gemini_generate_venue_overview')) {
-  throw new Exception('gemini_generate_venue_overview() not loaded. Check config.php include.');
-  }
-  $overview = gemini_generate_venue_overview($venueName, $allReviews);
-
-  $pdo->prepare("
-    UPDATE venues
-    SET ai_summary=?, ai_summary_updated_at=NOW(), ai_summary_status='idle'
-    WHERE id=?
-  ")->execute([$overview, $venueId]);
-
-} catch (Throwable $e) {
-  $pdo->prepare("UPDATE venues SET ai_summary_status='error' WHERE id=?")->execute([$venueId]);
-  error_log("Gemini failed venue {$venueId}: " . $e->getMessage());
-}
 
 $_SESSION['flash_success'] = 'Thanks for your review!';
 header("Location: venue-page.php?id={$venueId}#reviews");

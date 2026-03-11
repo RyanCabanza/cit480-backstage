@@ -2,6 +2,12 @@
 <?php
 require __DIR__ . '/config.php'; // starts session & connects to DB
 
+$timeoutMessage = '';
+if (isset($_GET['reason']) && $_GET['reason']=== 'timeout') {
+	$timeoutMessage = 'You were logged out due to inactivity.';
+	
+}
+
 $isLoggedIn = !empty($_SESSION['user_id']);
 $userName = $_SESSION['user_name'] ?? '';
 
@@ -123,7 +129,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				</div>
 
 				<div class="col-3">
-					<a href="my_account.HTML">PROFILE</a>
+					<a href="my_account.php">ACCOUNT</a>
 				</div>
 
 				<div class="col-3">
@@ -152,7 +158,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="hamburger">
 								<li><a class="dropdown-item" href="index.php">Home</a></li>
-								<li><a class="dropdown-item" href="#">Profile</a></li>
+								<li><a class="dropdown-item" href="#">Account</a></li>
 								<li><a class="dropdown-item" href="#">Venues</a></li>
 
 							<?php if ($isLoggedIn): ?>

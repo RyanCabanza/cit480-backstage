@@ -436,3 +436,10 @@ body.venue-page footer .text-muted {
   width: 100%;
   display: block;
 }
+
+ .review-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
