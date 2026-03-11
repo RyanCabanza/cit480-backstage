@@ -26,7 +26,7 @@ try {
 // Put your Gemini key in an environment variable if possible:
 $geminiKey = $_ENV['GEMINI_API_KEY'] ?? '';
 if ($geminiKey === '') {
-  $geminiKey = 'AIzaSyCdk9jtU4HJ0ppjXapZj8Ir0yPq8HA9R18';
+  $geminiKey = 'AIzaSyDwM4pskhqsPR9tPow6UxESfUDcIlRoP80';
 }
 
 define('GEMINI_API_KEY', $geminiKey);
