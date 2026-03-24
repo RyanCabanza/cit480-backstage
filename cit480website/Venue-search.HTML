@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Backstage · Venues</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-4 text-start">
+        <a href="index.html">
+          <img src="Images/logo.png" height="60">
+        </a>
+      </div>
+
+      <div class="col-8 text-end pe-4">
+        <a href="index.html" class="me-3" style="color:#fff; font-weight:bold;">HOME</a>
+        <a href="venues.html" class="me-3" style="color:#fff; font-weight:bold;">VENUES</a>
+        <a href="login.html" class="me-3" style="color:#fff; font-weight:bold;">LOGIN</a>
+        <a href="signup.html" style="color:#fff; font-weight:bold;">SIGN UP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h2 class="mb-4">Find a Venue</h2>
+
+    <!-- SEARCH + FILTERS -->
+    <div class="card p-3 mb-4">
+      <form id="searchForm" class="row g-3">
+
+        <div class="col-lg-5">
+          <label class="form-label">Search</label>
+          <input type="text" id="searchInput" class="form-control" placeholder="Search venues...">
+        </div>
+
+        <div class="col-lg-3">
+          <label class="form-label">Sort By</label>
+          <select id="sortBy" class="form-select">
+            <option value="az">A-Z</option>
+            <option value="za">Z-A</option>
+            <option value="ratingHigh">Highest Rating</option>
+            <option value="ratingLow">Lowest Rating</option>
+          </select>
+        </div>
+
+        <div class="col-lg-2">
+          <label class="form-label">Order</label>
+          <select id="displayOrder" class="form-select">
+            <option value="Asc">Ascending</option>
+            <option value="Desc">Descending</option>
+          </select>
+        </div>
+
+        <div class="col-lg-2 d-flex align-items-end">
+          <button class="btn btn-primary w-100">Search</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="mb-3 text-muted">
+      <span id="resultsCount">0</span> results
+    </div>
+
+    <div class="row g-4" id="venuesGrid"></div>
+
+    <div id="emptyState" class="text-center mt-4 text-muted d-none">
+      No venues found
+    </div>
+
+  </main>
+
+  <script>
+    let venues = []; // <-- PUT DB HERE (this will be filled with DB data)
+
+    const venuesGrid = document.getElementById('venuesGrid');
+    const resultsCount = document.getElementById('resultsCount');
+    const emptyState = document.getElementById('emptyState');
+
+    const searchInput = document.getElementById('searchInput');
+    const sortBy = document.getElementById('sortBy');
+    const displayOrder = document.getElementById('displayOrder');
+    const searchForm = document.getElementById('searchForm');
+
+    function venueCard(v) {
+      return `
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100">
+            <img src="PLACE_IMAGE_URL" class="card-img-top">
+            <div class="card-body">
+              <h5>${v.name}</h5>
+              <p>${v.city}, ${v.state}</p>
+              <p>⭐ ${v.rating}</p>
+
+              <a href="venue.html?id=${v.id}" class="btn btn-outline-primary">
+                View Venue
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function applySearch(data) {
+      const term = searchInput.value.toLowerCase();
+      if (!term) return data;
+
+      return data.filter(v =>
+        v.name.toLowerCase().includes(term)
+      );
+    }
+
+    function applySort(data) {
+      const sorted = [...data];
+
+      if (sortBy.value === 'az') {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy.value === 'za') {
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+      } else if (sortBy.value === 'ratingHigh') {
+        sorted.sort((a, b) => b.rating - a.rating);
+      } else if (sortBy.value === 'ratingLow') {
+        sorted.sort((a, b) => a.rating - b.rating);
+      }
+
+      return sorted;
+    }
+
+    function applyOrder(data) {
+      if (displayOrder.value === 'Desc') {
+        return [...data].reverse();
+      }
+      return data;
+    }
+
+    function renderVenues() {
+      let data = applySearch(venues);
+      data = applySort(data);
+      data = applyOrder(data);
+
+      venuesGrid.innerHTML = data.map(venueCard).join('');
+      resultsCount.textContent = data.length;
+
+      emptyState.classList.toggle('d-none', data.length !== 0);
+    }
+
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // ============================
+      // PUT DB HERE
+      // ============================
+      renderVenues();
+    });
+
+    sortBy.addEventListener('change', renderVenues);
+    displayOrder.addEventListener('change', renderVenues);
+
+    // Initial load
+    // ============================
+    // PUT DB HERE (initial fetch)
+    // ============================
+    renderVenues();
+  </script>
+
+</body>
+</html>
