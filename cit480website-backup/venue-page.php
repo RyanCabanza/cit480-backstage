@@ -61,8 +61,10 @@ $reviews = $rx->fetchAll();
   >
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="styles.css?v=3">
+    <link rel="stylesheet" type="text/css" href="styles.css?v=4">
     </head>
+
+    
       <body class="venue-page">
         <div class="container-fluid">
 
