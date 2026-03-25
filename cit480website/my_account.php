@@ -48,25 +48,68 @@ if (!$isLoggedIn) {
 
 <body>
   <!-- NAV -->
-  <nav class="container-fluid">
-    <div class="row align-items-center">
-      <div class="col-4 text-start">
-        <a href="index.php">
-          <img src="Images/logo.png" alt="Backstage Logo" height="60">
-        </a>
-      </div>
+<nav class="row align-items-center">
+				<div class="col-8">
+					<a href="index.php">
+						<img src="https://placehold.co/65x65" class="d-block d-md-none">
+					</a>
+					<a href="index.php">
+						<img src="https://placehold.co/285x65" class="d-none d-md-block">
+					</a>
+				</div>
+				<div class="col-4 text-center">
 
-      <div class="col-8 text-end pe-4">
-        <span class="me-3 fw-semibold" style="color:#fff;">
-          Welcome, <span id="navUserName"><?= htmlspecialchars($userName) ?></span>!
-        </span>
-        <a href="index.php" class="me-3" style="color:#fff; font-weight:bold;">HOME</a>
-        <a href="venues.php" class="me-3" style="color:#fff; font-weight:bold;">VENUES</a>
-        <a href="#" class="text-danger" style="font-weight:bold;" id="logoutBtn">LOGOUT</a>
-      </div>
-    </div>
-  </nav>
+				<div class="row d-none d-lg-flex" id="navLinks">
+				<div class="col-3">
+					<a href="index.php">HOME</a>
+				</div>
 
+				<div class="col-3">
+					<a href="my_account.php">ACCOUNT</a>
+				</div>
+
+				<div class="col-3">
+					<a href="venue-search.php">VENUES</a>
+				</div>
+
+				<div class="col-3">
+					<?php if ($isLoggedIn): ?>
+					<div class="small">
+						<div class="fw-semibold">Welcome, <?= htmlspecialchars($userName) ?></div>
+						<a href="logout.php" class="text-danger">LOGOUT</a>
+					</div>
+					<?php else: ?>
+					<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">LOGIN</a>
+					<?php endif; ?>
+				</div>
+				</div>
+
+
+					<div class="row d-flex d-lg-none">
+						<div class="dropdown">
+							<button type="button" id="hamburger" data-bs-toggle="dropdown" aria-expanded="false">
+							    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-list" viewBox="0 0 16 16">
+									<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+								</svg>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="hamburger">
+								<li><a class="dropdown-item" href="index.php">Home</a></li>
+								<li><a class="dropdown-item" href="my_account.php">Account</a></li>
+								<li><a class="dropdown-item" href="venue-search.php">Venues</a></li>
+
+							<?php if ($isLoggedIn): ?>
+								<li><hr class="dropdown-divider"></li>
+								<li><span class="dropdown-item-text">Logged in as <?= htmlspecialchars($userName) ?></span></li>
+								<li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
+							<?php else: ?>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
+							<?php endif; ?>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
   <main class="container py-4">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
       <h2 class="mb-0">My Account</h2>
@@ -250,7 +293,9 @@ if (!$isLoggedIn) {
     </div>
   </main>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+	<script>
+  
     // --- Helpers ---
     function showAlert(el, msg, type) {
       el.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning');
@@ -345,6 +390,7 @@ profileForm.addEventListener('submit', async (e) => {
   if (json.ok) {
     document.getElementById('navUserName').textContent = json.name;
     document.getElementById('summaryEmail').textContent = json.email;
+    document.getElementById('removeImageField').value = '0';
 
     initialProfile = { name: json.name, email: json.email };
 
@@ -389,45 +435,7 @@ profileForm.addEventListener('submit', async (e) => {
         });
       });
     }
-    wireRemoveFavButtons();
-
-    // Add mock favorite
-    document.getElementById('addMockFavoriteBtn').addEventListener('click', () => {
-      const list = document.getElementById('favoritesList');
-      const id = Math.floor(Math.random() * 1000) + 1;
-      const li = document.createElement('li');
-      li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.innerHTML = `
-        <a href="venue.html?id=${id}">Mock Venue #${id}</a>
-        <button class="btn btn-sm btn-outline-danger" type="button" data-remove-fav>Remove</button>
-      `;
-      list.prepend(li);
-      wireRemoveFavButtons();
-      updateEmptyStates();
-    });
-
-    // Add mock commented venue
-    document.getElementById('addMockCommentBtn').addEventListener('click', () => {
-      const list = document.getElementById('commentedList');
-      const id = Math.floor(Math.random() * 1000) + 1;
-      const li = document.createElement('li');
-      li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.innerHTML = `
-        <div>
-          <a href="venue.html?id=${id}">Mock Commented Venue #${id}</a>
-          <div class="small text-muted">Reviews: 1</div>
-        </div>
-        <span class="small text-muted">Last: 2026-02-18</span>
-      `;
-      list.prepend(li);
-      updateEmptyStates();
-    });
-
-    // Logout mock
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Mock logout. In PHP this would destroy the session and redirect.');
-    });
+    wireRemoveFavButtons(); 
 
     updateEmptyStates();
 
@@ -472,6 +480,8 @@ removeProfileImageBtn.addEventListener('click', (e) => {
 
   profileImageInput.value = '';
   profilePreview.src = DEFAULT_AVATAR;
+
+  profileForm.requestSubmit();
 });
   </script>
 </body>
