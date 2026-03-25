@@ -97,31 +97,6 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 					</a>
 				</div>
 				<div class="col-4 text-center">
-					
-				 <!-- <div class="row d-none d-lg-flex" id="navLinks">
-  						<?php if ($isLoggedIn): ?>
-    						<div class="col-6 text-end">
-      							<span class="fw-semibold">Welcome, <?= htmlspecialchars($userName) ?>!</span>
-    						</div>
-    						<div class="col-6 text-start">
-      						<a href="logout.php" class="text-danger">LOGOUT</a>
-    						</div>
-  						<?php else: ?>
-   							<div class="col-3">
-      							<a href="index.php">HOME</a>
-    						</div>
-    					<div class="col-3">
-      						<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">LOGIN</a>
-    					</div>
-    					<div class="col-3">
-      						<a href="#">REVIEWS</a>
-    					</div>
-    					<div class="col-3">
-      						<a href="#">VENUES</a>
-    					</div>
-  						<?php endif; ?>
-						</div>
-						-->
 
 				<div class="row d-none d-lg-flex" id="navLinks">
 				<div class="col-3">
@@ -133,7 +108,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				</div>
 
 				<div class="col-3">
-					<a href="#">VENUES</a>
+					<a href="venue-search.php">VENUES</a>
 				</div>
 
 				<div class="col-3">
@@ -158,8 +133,8 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="hamburger">
 								<li><a class="dropdown-item" href="index.php">Home</a></li>
-								<li><a class="dropdown-item" href="#">Account</a></li>
-								<li><a class="dropdown-item" href="#">Venues</a></li>
+								<li><a class="dropdown-item" href="my_account.php">Account</a></li>
+								<li><a class="dropdown-item" href="venue-search.php">Venues</a></li>
 
 							<?php if ($isLoggedIn): ?>
 								<li><hr class="dropdown-divider"></li>

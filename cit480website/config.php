@@ -23,10 +23,13 @@ try {
 
 // ---- Gemini AI config ----
 // Put your Gemini key in an environment variable if possible:
-$geminiKey = $_ENV['GEMINI_API_KEY'] ?? '';
+$geminiKey = $_ENV['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?? '';
 if ($geminiKey === '') {
-  $geminiKey = 'AIzaSyDwM4pskhqsPR9tPow6UxESfUDcIlRoP80';
+  throw new Exception('Missing GEMINI_API_KEY.');
 }
+
+//test dump key
+//var_dump(getenv('GEMINI_API_KEY'));
 
 define('GEMINI_API_KEY', $geminiKey);
 define('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');

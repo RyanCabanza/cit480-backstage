@@ -287,10 +287,23 @@ body.venue-page {
 	color: #f5f5f5;
 }
 
-/* Container spacing on venue pages */
+/* Container spacing on venue pages 
 body.venue-page .container-fluid {
 	max-width: 1200px;
 	padding: 32px 16px 64px;
+}
+*/
+body.venue-page .container-fluid {
+	padding: 0 16px 64px;
+}
+ 
+
+body.venue-page main,
+body.venue-page #venue-hero,
+body.venue-page footer {
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /* Hero section: title + rating row */

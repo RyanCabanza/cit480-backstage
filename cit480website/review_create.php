@@ -64,6 +64,39 @@ $ins = $pdo->prepare('
 ');
 $ins->execute([$venueId, $userId, $rating, $comment]);
 
+// Fetch recent reviews for this venue
+$rx = $pdo->prepare('
+  SELECT rating, comment
+  FROM reviews
+  WHERE venue_id = ?
+  ORDER BY created_at DESC
+  LIMIT 12
+');
+$rx->execute([$venueId]);
+$reviews = $rx->fetchAll();
+
+// Generate AI summary
+try {
+  $summary = gemini_generate_venue_overview('Venue', $reviews);
+
+  // Save to venues table
+  $ux = $pdo->prepare('
+    UPDATE venues
+    SET ai_summary = ?, ai_summary_status = "done", ai_summary_updated_at = NOW()
+    WHERE id = ?
+  ');
+  $ux->execute([$summary, $venueId]);
+
+} catch (Throwable $e) {
+  // mark error (optional but recommended)
+  $ux = $pdo->prepare('
+    UPDATE venues
+    SET ai_summary_status = "error"
+    WHERE id = ?
+  ');
+  $ux->execute([$venueId]);
+}
+
 $_SESSION['flash_success'] = 'Thanks for your review!';
 header("Location: venue-page.php?id={$venueId}#reviews");
 exit;
