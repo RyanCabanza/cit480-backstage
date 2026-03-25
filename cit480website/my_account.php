@@ -73,7 +73,7 @@ if (!$isLoggedIn) {
 
       <!-- Optional: quick profile summary -->
       <div class="small text-muted">
-        Signed in as: <span id="summaryEmail">user@email.com</span>
+        Signed in as: <span id="summaryEmail"><?= htmlspecialchars($userEmail) ?></span>
       </div>
     </div>
 
@@ -462,29 +462,17 @@ profileForm.addEventListener('submit', async (e) => {
     profilePreview.onload = () => URL.revokeObjectURL(url);
   });
 
- removeProfileImageBtn.addEventListener('click', (e) => {
+removeProfileImageBtn.addEventListener('click', (e) => {
   e.preventDefault();
 
-  // mark for removal
   const removeField = document.getElementById('removeImageField');
-  removeField.value = '1';
+  if (removeField) {
+    removeField.value = '1';
+  }
 
-  // clear preview + file input
   profileImageInput.value = '';
   profilePreview.src = DEFAULT_AVATAR;
-
-  // submit form
-  profileForm.requestSubmit();
 });
-
-    removeProfileImageBtn?.addEventListener('click', async () => {
-    profileImageInput.value = '';
-    profilePreview.src = DEFAULT_AVATAR;
-
-    const removeField = document.getElementById('removeImageField');
-    if (removeField) removeField.value = '1';
-    profileForm.requestSubmit(); 
-  });
   </script>
 </body>
 </html>
