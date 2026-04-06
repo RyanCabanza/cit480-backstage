@@ -269,25 +269,6 @@ $reviews = $rx->fetchAll();
                 </div>
               <?php endif; ?>
 
-              
-              <div class="row">
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Capacity</p>
-                  <p class="mb-0 fw-semibold">15,000</p>
-                </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Type</p>
-                  <p class="mb-0 fw-semibold">Indoor Arena</p>
-                </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Parking</p>
-                  <p class="mb-0 fw-semibold">On-site & lots</p>
-                </div>
-                <div class="col-6 col-md-3 mb-3">
-                  <p class="mb-1 text-muted small">Accessibility</p>
-                  <p class="mb-0 fw-semibold">Wheelchair access</p>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -699,27 +680,33 @@ $reviews = $rx->fetchAll();
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 <!-- Login + Signup AJAX -->
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = new FormData(loginForm);
 
-      const res = await fetch('login.php', {
-        method: 'POST',
-        body: data,
-        credentials: 'same-origin'
-      });
+      try {
+        const data = new FormData(loginForm);
+        const res = await fetch('login.php', {
+          method: 'POST',
+          body: data
+        });
 
-      const json = await res.json();
+        const text = await res.text();
+        const json = JSON.parse(text);
 
-      if (json.ok) {
-        bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
-        location.reload();
-      } else {
-        alert(json.error || 'Login failed.');
+        if (json.ok) {
+          bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
+          location.reload();
+        } else {
+          alert(json.error || 'Login failed.');
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        alert('Login failed.');
       }
     });
   }
@@ -728,25 +715,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (signUpForm) {
     signUpForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = new FormData(signUpForm);
 
-      const res = await fetch('signup.php', {
-        method: 'POST',
-        body: data,
-        credentials: 'same-origin'
-      });
+      try {
+        const data = new FormData(signUpForm);
+        const res = await fetch('signup.php', {
+          method: 'POST',
+          body: data
+        });
 
-      const json = await res.json();
+        const text = await res.text();
+        const json = JSON.parse(text);
 
-      if (json.ok) {
-        bootstrap.Modal.getInstance(document.getElementById('signUpModal'))?.hide();
-        location.reload();
-      } else {
-        alert(json.error || 'Sign up failed.');
+        if (json.ok) {
+          bootstrap.Modal.getInstance(document.getElementById('signUpModal'))?.hide();
+          location.reload();
+        } else {
+          alert(json.error || 'Sign up failed.');
+        }
+      } catch (err) {
+        console.error('Signup error:', err);
+        alert('Sign up failed.');
       }
     });
   }
 });
+
 </script>
 
 <!-- Sort dropdown -->

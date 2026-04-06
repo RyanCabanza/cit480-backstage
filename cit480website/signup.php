@@ -30,9 +30,34 @@ if ($password !== $confirm) {
   echo json_encode(['ok' => false, 'error' => 'Passwords do not match.']);
   exit;
 }
+
 if (strlen($password) < 8) {
   http_response_code(422);
-  echo json_encode(['ok' => false, 'error' => 'Password must be at least 8 chars.']);
+  echo json_encode(['ok' => false, 'error' => 'Password must be at least 8 characters long.']);
+  exit;
+}
+
+if (!preg_match('/[A-Z]/', $password)) {
+  http_response_code(422);
+  echo json_encode(['ok' => false, 'error' => 'Password must include at least one uppercase letter.']);
+  exit;
+}
+
+if (!preg_match('/[a-z]/', $password)) {
+  http_response_code(422);
+  echo json_encode(['ok' => false, 'error' => 'Password must include at least one lowercase letter.']);
+  exit;
+}
+
+if (!preg_match('/[0-9]/', $password)) {
+  http_response_code(422);
+  echo json_encode(['ok' => false, 'error' => 'Password must include at least one number.']);
+  exit;
+}
+
+if (!preg_match('/[^a-zA-Z0-9]/', $password)) {
+  http_response_code(422);
+  echo json_encode(['ok' => false, 'error' => 'Password must include at least one special character.']);
   exit;
 }
 

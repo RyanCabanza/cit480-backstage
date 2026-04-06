@@ -10,6 +10,7 @@ $userImage = $_SESSION ['profile_image_path'] ?? '';
 // Reviews the user wrote (1 per venue)
 $rx = $pdo->prepare("
   SELECT
+    r.id,
     r.rating,
     r.comment,
     r.created_at,
@@ -187,7 +188,7 @@ if (!$isLoggedIn) {
 
           <div id="passwordAlert" class="alert d-none" role="alert"></div>
 
-          <form id="passwordForm">
+          <form id="passwordForm" method="post" action="password_update.php">
             <div class="mb-3">
               <label class="form-label">Current Password</label>
               <input class="form-control" name="current_password" type="password" placeholder="••••••••" required>
@@ -195,8 +196,19 @@ if (!$isLoggedIn) {
 
             <div class="mb-3">
               <label class="form-label">New Password</label>
-              <input class="form-control" id="newPass" name="new_password" type="password" minlength="8" required>
-              <div class="form-text">Minimum 8 characters.</div>
+              <input
+                class="form-control"
+                id="newPass"
+                name="new_password"
+                type="password"
+                minlength="8"
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+                title="At least 8 characters, with one uppercase letter, one lowercase letter, one number, and one special character"
+                required
+              >
+              <div class="form-text">
+                At least 8 characters, including uppercase, lowercase, number, and special character.
+              </div>
             </div>
 
             <div class="mb-3">
@@ -208,50 +220,12 @@ if (!$isLoggedIn) {
           </form>
         </div>
       </div>
-
-      <!-- FAVORITES -->
-      <div class="col-lg-6">
-        <div class="card p-3">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">Pinned / Favorite Venues</h4>
-            <button class="btn btn-sm btn-outline-primary" type="button" id="addMockFavoriteBtn">+ Add Mock</button>
-          </div>
-
-          <p class="text-muted small mb-3">
-            (Mock data for layout/testing. Later you’ll load this from DB.)
-          </p>
-
-          <ul class="list-group" id="favoritesList">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <a href="venue.html?id=1">insert link to page and source name </a>
-              <button class="btn btn-sm btn-outline-danger" type="button" data-remove-fav>Remove</button>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <a href="venue.html?id=2">insert link to page and source name </a>
-              <button class="btn btn-sm btn-outline-danger" type="button" data-remove-fav>Remove</button>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <a href="venue.html?id=3">insert link to page and source name</a>
-              <button class="btn btn-sm btn-outline-danger" type="button" data-remove-fav>Remove</button>
-            </li>
-          </ul>
-
-          <div id="favEmpty" class="text-muted mt-3 d-none">
-            You don’t have any favorites yet.
-          </div>
-        </div>
-      </div>
-
       <!-- COMMENTED -->
-      <div class="col-lg-6">
+      <div class="col-lg-12">
         <div class="card p-3">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">Venues You Commented On</h4>
           </div>
-
-          <p class="text-muted small mb-3">
-            (Mock data for layout/testing. Later you’ll load this from your reviews table.)
-          </p>
 
          <ul class="list-group" id="commentedList">
   <?php if (!empty($userReviews)): ?>
@@ -272,9 +246,20 @@ if (!$isLoggedIn) {
             </div>
           </div>
 
-          <span class="small text-muted text-nowrap">
-            <?= htmlspecialchars(date('M j, Y', strtotime($rev['created_at']))) ?>
-          </span>
+            <div class="text-end">
+              <span class="small text-muted d-block mb-2">
+                <?= htmlspecialchars(date('M j, Y', strtotime($rev['created_at']))) ?>
+              </span>
+
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                data-review-id="<?= (int)$rev['id'] ?>"
+                data-delete-review
+              >
+                Delete
+              </button>
+            </div>
         </div>
       </li>
     <?php endforeach; ?>
@@ -306,15 +291,11 @@ if (!$isLoggedIn) {
       el.classList.add('d-none');
       el.textContent = '';
     }
-    function updateEmptyStates() {
-      const favList = document.getElementById('favoritesList');
-      const favEmpty = document.getElementById('favEmpty');
-      favEmpty.classList.toggle('d-none', favList.children.length !== 0);
-
-      const cList = document.getElementById('commentedList');
-      const cEmpty = document.getElementById('commentEmpty');
-      cEmpty.classList.toggle('d-none', cList.children.length !== 0);
-    }
+   function updateEmptyStates() {
+  const cList = document.getElementById('commentedList');
+  const cEmpty = document.getElementById('commentEmpty');
+  cEmpty.classList.toggle('d-none', cList.children.length !== 0);
+}
 
     // --- Profile edit ---
 const profileForm   = document.getElementById('profileForm');
@@ -387,27 +368,21 @@ profileForm.addEventListener('submit', async (e) => {
 
   const json = await res.json();
 
-  if (json.ok) {
-    document.getElementById('navUserName').textContent = json.name;
-    document.getElementById('summaryEmail').textContent = json.email;
-    document.getElementById('removeImageField').value = '0';
-
-    initialProfile = { name: json.name, email: json.email };
-
-    setEditing(false);
-    showAlert(profileAlert, 'Profile updated.', 'success');
-  } else {
-    showAlert(profileAlert, json.error || 'Update failed.', 'danger');
-  }
+          
+          if (json.ok) {
+          location.reload();
+        } else {
+          alert(json.error || 'Update failed.');
+        }
     });
 
-    // --- Password mock save ---
+    // --- Password save ---
     const passwordForm = document.getElementById('passwordForm');
     const passwordAlert = document.getElementById('passwordAlert');
     const newPass = document.getElementById('newPass');
     const confirmPass = document.getElementById('confirmPass');
 
-    passwordForm.addEventListener('submit', (e) => {
+    passwordForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(passwordAlert);
 
@@ -415,34 +390,32 @@ profileForm.addEventListener('submit', async (e) => {
         showAlert(passwordAlert, 'New passwords do not match.', 'danger');
         return;
       }
-      if (newPass.value.length < 8) {
-        showAlert(passwordAlert, 'New password must be at least 8 characters.', 'danger');
+        //stop bad data from reaching server
+      if (!passwordForm.checkValidity()) {
+        passwordForm.reportValidity();
         return;
       }
 
-      showAlert(passwordAlert, 'Password updated (mock). Later this will update the database.', 'success');
-      passwordForm.reset();
-    });
+          const data = new FormData(passwordForm);
 
-    // --- Favorites remove ---
-    function wireRemoveFavButtons() {
-      document.querySelectorAll('[data-remove-fav]').forEach(btn => {
-        if (btn._wired) return;
-        btn._wired = true;
-        btn.addEventListener('click', () => {
-          btn.closest('li').remove();
-          updateEmptyStates();
-        });
-      });
-    }
-    wireRemoveFavButtons(); 
+          const res = await fetch('password_update.php', {
+            method: 'POST',
+            body: data,
+            credentials: 'same-origin'
+          });
+
+          const json = await res.json();
+
+          if (json.ok) {
+            location.reload();
+          } else {
+            showAlert(passwordAlert, json.error || 'Password update failed.', 'danger');
+          }
+    });
 
     updateEmptyStates();
 
-      // Profile image preview (mock)
-
-   /*profileImageInput?.addEventListener('change', () => {
-    const file = profileImageInput.files && profileImageInput.files[0]; */
+      // Profile image preview 
    profileImageInput?.addEventListener('change', () => {
     const removeField = document.getElementById('removeImageField');
     if (removeField) removeField.value = '0';
@@ -483,6 +456,34 @@ removeProfileImageBtn.addEventListener('click', (e) => {
 
   profileForm.requestSubmit();
 });
+
+    document.querySelectorAll('[data-delete-review]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const reviewId = btn.getAttribute('data-review-id');
+
+        if (!confirm('Delete this review?')) return;
+
+        const data = new FormData();
+        data.append('review_id', reviewId);
+
+        const res = await fetch('review_delete.php', {
+          method: 'POST',
+          body: data,
+          credentials: 'same-origin'
+        });
+
+        const json = await res.json();
+
+        if (json.ok) {
+          btn.closest('li').remove();
+          updateEmptyStates();
+        } else {
+          alert(json.error || 'Delete failed.');
+        }
+      });
+    });
   </script>
+
+
 </body>
 </html>
