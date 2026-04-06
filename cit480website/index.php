@@ -73,7 +73,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	
 	<body>
 		<div class="container-fluid">
-			<div class="row" id="banner">
+			<div class="row hero-banner" id="banner">
 				<div id="banner-text-box">
 					<div id="banner-text-content">
 						<h1>Save the night. Share the story.</h1>

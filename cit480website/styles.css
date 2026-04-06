@@ -54,12 +54,29 @@ nav	img {
 ------------------------------------*/
 
 /*---Banner---*/
-#banner{
-	height: 500px;
-	/*background: url(https://placehold.co/1920x500),
-	no-repeat fixed center / cover;*/
-	background-color: #dddddd;
+#banner {
+    height: 500px;
+    background: url('images/hero.jpg') center center / cover no-repeat;
+    position: relative;
+    color: #ffffff;
+    padding: 80px 0;
+    text-align: center;
 }
+
+#banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+#banner-text-box,
+#search-container {
+    position: relative;
+    z-index: 2;
+}
+
 #search-container{
 	display: flex;
 	justify-content: center;
@@ -67,7 +84,20 @@ nav	img {
 #input-field{
 	width: 70vw;
 	padding: 20px;
+	border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+
+    background: rgba(20, 20, 24, 0.9);
+    color: #ffffff;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+    transition: all 0.2s ease;
 }
+#input-field::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
 #banner-text-box{
 	display: flex;
 	flex-direction: column;
@@ -192,14 +222,6 @@ nav a {
 }
 nav a:hover {
   color: #e83e8c;
-}
-
-/* Banner */
-#banner {
-  background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
-  color: #ffffff;
-  padding: 80px 0;
-  text-align: center;
 }
 
 /* Search box */
@@ -443,4 +465,16 @@ body.venue-page footer .text-muted {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+}
+/* Venue-Page */
+.results-count {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 1rem;
+}
+
+.results-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
 }
