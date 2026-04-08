@@ -69,7 +69,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="styles.css?=v3">
+		<link rel="stylesheet" type="text/css" href="styles.css?=v1">
 	</head>
 	
 	<body>
@@ -82,8 +82,13 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 					</div>
 				</div>
 				<div id="search-container">
-					<form action="/search" method="get">
-						<input id="input-field" type="search" name="q" placeholder="Search an event, venue, or location...">
+					<form action="venue-search.php" method="get">
+						<input
+							id="input-field"
+							type="search"
+							name="q"
+							placeholder="Search an event, venue, or location..."
+						>
 						<button type="submit">Search</button>
 					</form>
 				</div>
@@ -204,7 +209,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							<?php foreach ($recentlyReviewed as $row): ?>
 								<td>
 								<a href="venue-page.php?id=<?= (int)$row['id'] ?>">
-									<div class="card" style="width: 300px;">
+									<div class="card carousel-card">
 									<img
 										src="<?= htmlspecialchars($row['image_url'] ?? 'venue-image/image1.jpg', ENT_QUOTES, 'UTF-8') ?>"
 										class="card-img-top"
@@ -243,7 +248,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							<?php foreach ($popularVenues as $row): ?>
 								<td>
 								<a href="venue-page.php?id=<?= (int)$row['id'] ?>">
-									<div class="card" style="width: 300px;">
+									<div class="card carousel-card">
 									<img
 										src="<?= htmlspecialchars($row['image_url'] ?? 'venue-image/image1.jpg', ENT_QUOTES, 'UTF-8') ?>"
 										class="card-img-top"
@@ -267,7 +272,9 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				</div>
 			</div>
 			<footer>
-				<p>Designed and developed by Zack Ahadi &middot; Ryan Cabanza &middot; Joey Frumento &middot; Martin Rodriguez &middot; Evelyn Tran</p>
+				<p>Designed and developed by Zack Ahadi &middot; Ryan Cabanza &middot; Joey Frumento &middot; Martin Rodriguez &middot; Evelyn Tran.   Have a question? 
+					<a href="contact.html">Contact Us</a>
+				</p>
 			</footer>
 		</div>
 

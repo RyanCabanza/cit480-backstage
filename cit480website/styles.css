@@ -170,6 +170,48 @@ nav	img {
 	padding: 25px;
 }
 
+.carousel-card {
+  width: 300px;
+}
+
+.carousel-card {
+  width: 300px;
+}
+
+.carousel-card .card-img-top {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-card .card-body {
+  min-height: 90px;
+}
+
+@media (max-width: 576px) {
+  .carousel td{
+	padding: 6px;
+  }
+
+  .carousel-card {
+    width: 220px;
+  }
+
+  .carousel-card .card-img-top {
+    height: 120px;
+  }
+
+  .carousel-card .card-body {
+    min-height: 80px;
+    padding: 12px;
+  }
+
+  .carousel-card h5 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+}
 /* Footer
 ------------------------------------*/
 footer{
@@ -267,10 +309,6 @@ nav a:hover {
   border: 1px solid #2a2a2a;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   overflow: hidden;
-}
-
-table.carousel .card {
-	width: 300px;
 }
 
 body.venue-page .card {

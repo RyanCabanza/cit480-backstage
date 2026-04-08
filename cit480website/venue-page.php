@@ -600,11 +600,11 @@ $reviews = $rx->fetchAll();
         	
       </main>
 
-      <footer class="row mt-5 py-4 border-top">
-        <div class="col text-center small text-muted">
-          Backstage · Venue details prototype
-        </div>
-      </footer>
+      <footer>
+				<p>Designed and developed by Zack Ahadi &middot; Ryan Cabanza &middot; Joey Frumento &middot; Martin Rodriguez &middot; Evelyn Tran.   Have a question? 
+					<a href="contact.html">Contact Us</a>
+				</p>
+			</footer>
 
     </div>
 <!-- LOGIN MODAL -->
