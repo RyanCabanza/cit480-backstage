@@ -61,11 +61,12 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 
-
 		<!-- Bootstrap -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="styles.css?=v3">
@@ -149,23 +150,39 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 					</div>
 				</div>
 			</nav>
+		
 			<div class="row about">
-				<div class="col-lg-4" id="aboutItem1">
-					<img src="https://placehold.co/50x50">
-					<h4>Track your events</h4>
-					<p class="aboutDesc">Build an archive of past concerts, sporting events, comedy shows, or any live events you've attended, and create wishlists for future events.</p>
-				</div>
-				<div class="col-lg-4" id="aboutItem2">
-					<img src="https://placehold.co/50x50">
-					<h4>Write and share reviews</h4>
-					<p class="aboutDesc">Share your thoughts, give ratings, and post any photos or videos on different venues, and follow friends and other members to view theirs.</p>
-				</div>
-				<div class="col-lg-4" id="aboutItem3">
-					<img src="https://placehold.co/50x50">
-					<h4>View venue details</h4>
-					<p class="aboutDesc">Get information on the next venue you attend, including location, parking information, upcoming events, ratings, reviews, and much more.</p>
-				</div>
+			<div class="col-lg-4" id="aboutItem1">
+				<span class="about-icon">
+					<i class="fa-solid fa-calendar-check"></i>
+				</span>
+				<h4>Track your events</h4>
+				<p class="aboutDesc">
+					Build an archive of past concerts, sporting events, comedy shows, or any live events you've attended, and create wishlists for future events.
+				</p>
 			</div>
+
+			<div class="col-lg-4" id="aboutItem2">
+				<span class="about-icon">
+					<i class="fa-solid fa-pen-to-square"></i>
+				</span>
+				<h4>Write and share reviews</h4>
+				<p class="aboutDesc">
+					Share your thoughts, give ratings, and post any photos or videos on different venues, and follow friends and other members to view theirs.
+				</p>
+			</div>
+
+			<div class="col-lg-4" id="aboutItem3">
+				<span class="about-icon">
+					<i class="fa-solid fa-map-location-dot"></i>
+				</span>
+				<h4>View venue details</h4>
+				<p class="aboutDesc">
+					Get information on the next venue you attend, including location, parking information, upcoming events, ratings, reviews, and much more.
+				</p>
+			</div>
+			</div>
+
 			<div class="row">
 				<div class="col" id="signUp">
 					<h5>Join Backstage today!</h5>
