@@ -87,7 +87,7 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							id="input-field"
 							type="search"
 							name="q"
-							placeholder="Search an event, venue, or location..."
+							placeholder="Search a venue or location..."
 						>
 						<button type="submit">Search</button>
 					</form>
