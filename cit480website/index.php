@@ -110,7 +110,11 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				</div>
 
 				<div class="col-3">
+				<?php if ($isLoggedIn): ?>
 					<a href="my_account.php">ACCOUNT</a>
+				<?php else: ?>
+					<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">ACCOUNT</a>
+				<?php endif; ?>
 				</div>
 
 				<div class="col-3">
@@ -139,7 +143,11 @@ $popularVenues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="hamburger">
 								<li><a class="dropdown-item" href="index.php">Home</a></li>
-								<li><a class="dropdown-item" href="my_account.php">Account</a></li>
+								<?php if ($isLoggedIn): ?>
+									<li><a class="dropdown-item" href="my_account.php">Account</a></li>
+								<?php else: ?>
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Account</a></li>
+								<?php endif; ?>
 								<li><a class="dropdown-item" href="venue-search.php">Venues</a></li>
 
 							<?php if ($isLoggedIn): ?>
