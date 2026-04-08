@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-$name     = trim((string)($_POST['username'] ?? '')); // your modal label says “Name or Username”
+verify_csrf();
+$name     = trim((string)($_POST['username'] ?? '')); 
 $email    = trim((string)($_POST['email'] ?? ''));
 $password = (string)($_POST['password'] ?? '');
 $confirm  = (string)($_POST['password_confirm'] ?? '');
@@ -71,7 +72,7 @@ try {
     exit;
   }
 
-  $hash = password_hash($password, PASSWORD_DEFAULT); // bcrypt/argon auto
+  $hash = password_hash($password, PASSWORD_DEFAULT);
 
   $ins = $pdo->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
   $ins->execute([$name, strtolower($email), $hash]);

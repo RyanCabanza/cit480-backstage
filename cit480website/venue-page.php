@@ -307,6 +307,7 @@ $reviews = $rx->fetchAll();
                 <?php if ($isLoggedIn): ?>
                   <!-- Logged-in users can post -->
                   <form id="reviewForm" method="post" action="review_create.php">
+                    <?= csrf_input() ?>
                     <input type="hidden" name="venue_id" value="<?= (int)$venueId ?>">
 
                     <div class="mb-3">
@@ -617,6 +618,7 @@ $reviews = $rx->fetchAll();
 		      </div>
 		      <div class="modal-body">
 		       <form id="loginForm" method="post" action="login.php">
+            <?= csrf_input() ?>
   				<div class="mb-3">
     			<label for="loginEmail" class="form-label">Email address</label>
     			<input type="email" class="form-control" id="loginEmail" name="email" required>
@@ -648,6 +650,7 @@ $reviews = $rx->fetchAll();
 		      </div>
 		      <div class="modal-body">
 		        <form id="signUpForm" method="post" action="signup.php">
+             <?= csrf_input() ?>
   				<div class="mb-3">
     				<label for="signUpUser" class="form-label">Name or Username</label>
     				<input type="text" class="form-control" id="signUpUser" name="username" required>
@@ -670,7 +673,6 @@ $reviews = $rx->fetchAll();
 		      </div>
 		      <div class="modal-footer">
 		        <p class="mb-0 small">Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></p>
-		        <p class="mb-0 small"><a href="#">Didn't receive confirmation email?</a></p>
 		      </div>
 		    </div>
 		  </div>

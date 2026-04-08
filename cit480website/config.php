@@ -115,6 +115,41 @@ ini_set('session.gc_maxlifetime', 300); // 5 minute
 
 session_start();
 
+
+//CSRF protection
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+function csrf_token(): string {
+  return $_SESSION['csrf_token'] ?? '';
+}
+
+function csrf_input(): string {
+  return '<input type="hidden" name="csrf_token" value="' .
+    htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') .
+    '">';
+}
+
+function verify_csrf(): void {
+  $sessionToken = $_SESSION['csrf_token'] ?? '';
+  $formToken = $_POST['csrf_token'] ?? '';
+
+  if (
+    !is_string($formToken) ||
+    $sessionToken === '' ||
+    !hash_equals($sessionToken, $formToken)
+  ) {
+    http_response_code(419);
+    header('Content-Type: application/json');
+    echo json_encode([
+      'ok' => false,
+      'error' => 'Invalid CSRF token.'
+    ]);
+    exit;
+  }
+}
+
 $timeout = 300;
 
 if (isset($_SESSION['LAST_ACTIVITY']) &&

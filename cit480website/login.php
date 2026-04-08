@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
+verify_csrf();
 $email = trim((string)($_POST['email'] ?? ''));
 $pass  = (string)($_POST['password'] ?? '');
 
